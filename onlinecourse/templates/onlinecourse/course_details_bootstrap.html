@@ -3,40 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ course.name }}</title>
-    <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">Online Course App</a>
     </nav>
 
-    <!-- Main Container -->
     <div class="container mt-5">
-        <div class="card shadow">
+        <div class="card shadow mb-4">
             <div class="card-header bg-primary text-white">
                 <h2>{{ course.name }}</h2>
             </div>
             <div class="card-body">
                 <p class="lead"><strong>Description:</strong> {{ course.description }}</p>
-                <hr>
-                <h3 class="mb-3">Lessons</h3>
-                
-                <div class="list-group">
-                    {% for lesson in course.lesson_set.all %}
-                        <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">{{ lesson.title }}</h5>
-                                <small class="text-muted">Order: {{ lesson.order }}</small>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <p class="text-muted">No lessons available for this course yet.</p>
-                    {% endfor %}
-                </div>
             </div>
         </div>
+
+        <!-- Exam Submission Form -->
+        <form action="{% url 'onlinecourse:submit' course.id %}" method="post">
+            {% csrf_token %}
+            
+            <h3 class="mb-3">Lessons & Exams</h3>
+            {% for lesson in course.lesson_set.all %}
+                <div class="card mb-3">
+                    <div class="card-header bg-secondary text-white">
+                        <h5>Lesson {{ lesson.order }}: {{ lesson.title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Loop through questions for this lesson -->
+                        {% for question in lesson.question_set.all %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <p><strong>Question:</strong> {{ question.question_text }}</p>
+                                    
+                                    <!-- Loop through choices for this question -->
+                                    <div class="form-check">
+                                        {% for choice in question.choice_set.all %}
+                                            <div class="form-group">
+                                                <input class="form-check-input" type="checkbox" name="choice" id="choice_{{ choice.id }}" value="{{ choice.id }}">
+                                                <label class="form-check-label" for="choice_{{ choice.id }}">
+                                                    {{ choice.choice_text }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No questions for this lesson yet.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success btn-lg mb-5">Submit Exam</button>
+        </form>
     </div>
 </body>
 </html>
