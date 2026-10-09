@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h2>Exam Results</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Congratulations!</h4>
+                    <p>You successfully passed the exam for <strong>{{ course.name }}</strong>.</p>
+                    <hr>
+                    <p class="mb-0">Your Score: <strong>{{ grade }} / {{ total_score }}</strong></p>
+                </div>
+                
+                <h3 class="mt-4">Exam Summary</h3>
+                <p>Submission ID: {{ submission.id }}</p>
+                
+                <a href="{% url 'onlinecourse:course_details' course.id %}" class="btn btn-primary mt-3">Back to Course Details</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
